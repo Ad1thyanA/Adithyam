@@ -1,0 +1,165 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Login Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #bfbfbf; /* changed from white (#f2f2f2) to grey */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-container {
+      background-color: #808080; /* grey login box */
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #666;
+      width: 320px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff; /* white text so it’s visible on grey */
+    }
+    label {
+      color: #fff;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 15px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+      color: white;
+    }
+    .captcha-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+      padding: 8px;
+      background: #ddd;
+      border-radius: 4px;
+    }
+    #captchaText {
+      font-weight: bold;
+      font-size: 18px;
+      letter-spacing: 3px;
+      color: #333;
+    }
+    .security-hints {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #fff;
+      background: #666;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #444;
+    }
+    .security-hints ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-container">
+  <h2>Login</h2>
+  <form id="loginForm" onsubmit="return validateLogin()">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" placeholder="Enter username" />
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" placeholder="Enter password" />
+    
+    <div class="captcha-box">
+      <span id="captchaText"></span>
+      <button type="button" onclick="generateCaptcha()">↻</button>
+    </div>
+    <input type="text" id="captchaInput" placeholder="Enter captcha" required>
+    
+    <button type="submit">Login</button>
+  </form>
+  <div id="message" class="message"></div>
+
+  <!-- Security rule hints -->
+  <div class="security-hints">
+    <strong>🔒 Security Rules:</strong>
+    <ul>
+      <li>Username cannot be empty</li>
+      <li>Password must be at least 6 characters and include a number</li>
+      <li>Captcha must match exactly</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  let captchaValue = "";
+
+  function generateCaptcha() {
+    let chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+    captchaValue = "";
+    for (let i = 0; i < 5; i++) {
+      captchaValue += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById("captchaText").innerText = captchaValue;
+  }
+
+  window.onload = generateCaptcha;
+
+  function validateLogin() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const captchaInput = document.getElementById("captchaInput").value.trim();
+    const message = document.getElementById('message');
+
+    if (!username || !password || !captchaInput) {
+      message.style.color = 'yellow';
+      message.textContent = 'Please fill in all fields (including captcha).';
+      return false;
+    }
+
+    const hasNumber = /\d/;
+    if (password.length < 6 || !hasNumber.test(password)) {
+      message.style.color = 'yellow';
+      message.textContent = 'Password must be at least 6 characters and include a number.';
+      return false;
+    }
+
+    if (captchaInput !== captchaValue) {
+      message.style.color = 'red';
+      message.textContent = '❌ Captcha does not match!';
+      generateCaptcha();
+      return false;
+    }
+
+    window.location.href = "test.html"; 
+    return false;
+  }
+</script>
+
+</body>
+</html>
+
